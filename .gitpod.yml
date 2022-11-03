@@ -1,3 +1,9 @@
+additionalRepositories:
+  - url: https://github.com/containernetworking/plugins
+    # checkoutLocation is optional and relative to /workspaces.
+    # by default the location defaults to the repository name.
+    checkoutLocation: go/src/github.com/plugins
+
 tasks:
   - name: Build a docker with CNI
     env: 
@@ -21,17 +27,15 @@ tasks:
           "name": "lo",
           "type": "loopback"
         }
-
     init: |
       echo "Install plugins"
-      git clone https://github.com/containernetworking/plugins.git /workspace/plugins
       sudo mkdir -p /etc/cni/net.d
-      sudo echo $MYNET_CONF >/etc/cni/net.d/10-mynet.conf
-      sudo echo $LOOPBACK_CONF >/etc/cni/net.d/99-loopback.conf
-      cd /workspace/plugins & /bin/bash build_linux.sh
-      export CNI_PATH=/workspace/plugins/bin 
     command: |
       (
+        sudo echo $MYNET_CONF >/etc/cni/net.d/10-mynet.conf
+        sudo echo $LOOPBACK_CONF >/etc/cni/net.d/99-loopback.conf
+        cd /workspace/plugins & /bin/bash build_linux.sh
+        export CNI_PATH=/workspace/plugins/bin 
         cd $GITPOD_REPO_ROOT/scripts
         sudo CNI_PATH=$CNI_PATH ./docker-run.sh --rm busybox:latest ifconfig
       )
