@@ -11,32 +11,30 @@ tasks:
       mkdir -p /etc/cni/net.d
       cat >/etc/cni/net.d/10-mynet.conf <<EOF
       {
-	      "cniVersion": "0.2.0",
-	      "name": "mynet",
-	      "type": "bridge",
-	      "bridge": "cni0",
-	      "isGateway": true,
-	      "ipMasq": true,
-	      "ipam": {
-		      "type": "host-local",
-		      "subnet": "10.22.0.0/16",
-		    "routes": [{ "dst": "0.0.0.0/0" }]
-	      }
+        "cniVersion": "0.2.0",
+        "name": "mynet",
+        "type": "bridge",
+        "bridge": "cni0",
+        "isGateway": true,
+        "ipMasq": true,
+        "ipam": {
+          "type": "host-local",
+          "subnet": "10.22.0.0/16",
+          "routes": [{ "dst": "0.0.0.0/0" }]
+        }
       }
       EOF
       cat >/etc/cni/net.d/99-loopback.conf <<EOF
       {
-	      "cniVersion": "0.2.0",
-	      "name": "lo",
-	      "type": "loopback"
+        "cniVersion": "0.2.0",
+        "name": "lo",
+        "type": "loopback"
       }
       EOF
       cd /workspace/plugins & /bin/bash build_linux.sh
       export CNI_PATH=/workspace/plugins/bin 
-      command: |
+    command: |
       (
         cd /workspace/cni/scripts
         sudo CNI_PATH=$CNI_PATH ./docker-run.sh --rm busybox:latest ifconfig
       )
-
-
