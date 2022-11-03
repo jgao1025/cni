@@ -1,10 +1,7 @@
 tasks:
   - name: Build a docker with CNI
-    init: |
-      echo "Install plugins"
-      git clone https://github.com/containernetworking/plugins.git /workspace/plugins
-      sudo mkdir -p /etc/cni/net.d
-      sudo cat >/etc/cni/net.d/10-mynet.conf <<EOF
+    env: 
+      MYNET_CONF: |
       {
         "cniVersion": "0.2.0",
         "name": "mynet",
@@ -18,18 +15,23 @@ tasks:
           "routes": [{ "dst": "0.0.0.0/0" }]
         }
       }
-      EOF
-      sudo cat >/etc/cni/net.d/99-loopback.conf <<EOF
+      LOOPBACK_CONF: |
       {
         "cniVersion": "0.2.0",
         "name": "lo",
         "type": "loopback"
       }
-      EOF
+
+    init: |
+      echo "Install plugins"
+      git clone https://github.com/containernetworking/plugins.git /workspace/plugins
+      sudo mkdir -p /etc/cni/net.d
+      sudo echo $MYNET_CONF >/etc/cni/net.d/10-mynet.conf
+      sudo echo $LOOPBACK_CONF >/etc/cni/net.d/99-loopback.conf
       cd /workspace/plugins & /bin/bash build_linux.sh
       export CNI_PATH=/workspace/plugins/bin 
     command: |
       (
-        cd /workspace/cni/scripts
+        cd $GITPOD_REPO_ROOT/scripts
         sudo CNI_PATH=$CNI_PATH ./docker-run.sh --rm busybox:latest ifconfig
       )
