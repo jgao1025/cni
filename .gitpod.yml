@@ -33,14 +33,10 @@ tasks:
         }
     init: |
       echo "Install plugins"
-      sudo su
-      mkdir -p /etc/cni/net.d
-      echo $MYNET_CONF >/etc/cni/net.d/10-mynet.conf
-      echo $LOOPBACK_CONF >/etc/cni/net.d/99-loopback.conf
-      exit
+      sudo mkdir -p /etc/cni/net.d
+      echo $MYNET_CONF | sudo tee -a /etc/cni/net.d/10-mynet.conf
+      echo $LOOPBACK_CONF | sudo tee -a /etc/cni/net.d/99-loopback.conf
     command: |
-      (
-        export CNI_PATH=/workspace/plugins/bin 
-        cd $GITPOD_REPO_ROOT/scripts
-        sudo CNI_PATH=$CNI_PATH ./docker-run.sh --rm busybox:latest ifconfig
-      )
+      export CNI_PATH=/workspace/plugins/bin 
+      cd $GITPOD_REPO_ROOT/scripts
+      sudo CNI_PATH=$CNI_PATH ./docker-run.sh --rm busybox:latest ifconfig
