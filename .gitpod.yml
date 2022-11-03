@@ -7,6 +7,7 @@ additionalRepositories:
 tasks:
   - name: Build a docker with CNI
     env: 
+      MYNET_CONF1: "test"
       MYNET_CONF: |
         {
           "cniVersion": "0.2.0",
@@ -32,7 +33,7 @@ tasks:
       sudo mkdir -p /etc/cni/net.d
     command: |
       (
-        sudo echo $MYNET_CONF >/etc/cni/net.d/10-mynet.conf
+        sudo echo $MYNET_CONF1 >/etc/cni/net.d/10-mynet.conf
         sudo echo $LOOPBACK_CONF >/etc/cni/net.d/99-loopback.conf
         cd /workspace/plugins & /bin/bash build_linux.sh
         export CNI_PATH=/workspace/plugins/bin 
