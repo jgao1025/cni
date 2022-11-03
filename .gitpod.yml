@@ -2,25 +2,25 @@ tasks:
   - name: Build a docker with CNI
     env: 
       MYNET_CONF: |
-      {
-        "cniVersion": "0.2.0",
-        "name": "mynet",
-        "type": "bridge",
-        "bridge": "cni0",
-        "isGateway": true,
-        "ipMasq": true,
-        "ipam": {
-          "type": "host-local",
-          "subnet": "10.22.0.0/16",
-          "routes": [{ "dst": "0.0.0.0/0" }]
+        {
+          "cniVersion": "0.2.0",
+          "name": "mynet",
+          "type": "bridge",
+          "bridge": "cni0",
+          "isGateway": true,
+          "ipMasq": true,
+          "ipam": {
+            "type": "host-local",
+            "subnet": "10.22.0.0/16",
+            "routes": [{ "dst": "0.0.0.0/0" }]
+          }
         }
-      }
       LOOPBACK_CONF: |
-      {
-        "cniVersion": "0.2.0",
-        "name": "lo",
-        "type": "loopback"
-      }
+        {
+          "cniVersion": "0.2.0",
+          "name": "lo",
+          "type": "loopback"
+        }
 
     init: |
       echo "Install plugins"
