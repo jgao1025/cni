@@ -7,7 +7,7 @@ additionalRepositories:
 tasks:
   - name: Build plugins
     init: |
-      cd /workspace/plugins & /bin/bash build_linux.sh
+      cd /workspace/go/src/github.com/plugins & /bin/bash build_linux.sh
 
   - name: Build a docker with CNI
     env: 
@@ -36,7 +36,7 @@ tasks:
       sudo mkdir -p /etc/cni/net.d
       echo $MYNET_CONF | sudo tee -a /etc/cni/net.d/10-mynet.conf
       echo $LOOPBACK_CONF | sudo tee -a /etc/cni/net.d/99-loopback.conf
+      export CNI_PATH=/workspace/go/src/github.com/plugins
     command: |
-      export CNI_PATH=/workspace/plugins/bin 
       cd $GITPOD_REPO_ROOT/scripts
       sudo CNI_PATH=$CNI_PATH ./docker-run.sh --rm busybox:latest ifconfig
